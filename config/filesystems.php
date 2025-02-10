@@ -33,6 +33,7 @@ return [
         'vault' => [
             'driver' => 'local',       
             'root' => storage_path('app/vault'),
+            'max_size' => env('UPLOAD_MAX_SIZE', 204800),
         ],
 
         'local' => [

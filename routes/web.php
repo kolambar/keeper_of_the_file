@@ -15,7 +15,7 @@ Route::get('/', function (Request $request) {
 
 Route::post('/upload', function (Request $request) {
     $request->validate([
-        'file' => 'required|file|max:10240',
+        'file' => 'required|file|max:204800',
     ]);
 
     $currentPath = $request->input('path', '');
