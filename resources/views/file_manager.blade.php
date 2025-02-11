@@ -8,7 +8,7 @@
 </head>
 <body class="bg-gray-100 min-h-screen p-6">
   <div class="w-full max-w-7xl mx-auto bg-white shadow-lg rounded-lg p-6">
-    <h1 class="text-3xl font-bold mb-4">Файловый менеджер</h1>
+    <h1 class="text-3xl font-bold mb-4 text-center">Keeper of the file</h1>
     
     <!-- Кнопка "Назад" (если не в корневой папке) -->
     @if ($currentPath)
@@ -60,7 +60,17 @@
         }
     </script>
 
-    <!-- Панель файлов и папок (занимает почти всю высоту) -->
+    <!-- поле для поиска файлов -->
+    <form action="{{ route('search') }}" method="GET" class="mb-4 flex items-center space-x-2">
+      <input type="text" name="query" placeholder="Введите имя файла..." required
+            class="border border-gray-300 rounded p-2 w-full">
+      <button type="submit"
+              class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+          Найти
+      </button>
+    </form>
+
+    <!-- Панель файлов и папок -->
     <div class="grid grid-cols-2 gap-4 h-[70vh]">
       <!-- Папки -->
       <div>
