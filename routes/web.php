@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\FileController;
+use App\Http\Middleware\VerifyCsrfToken;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
+
+VerifyCsrfToken::except(['/upload']);
 
 Route::get('/', function (Request $request) {
     $currentPath = $request->query('path', '');
@@ -16,6 +19,7 @@ Route::get('/', function (Request $request) {
 });
 
 Route::post('/upload', function (Request $request) {
+    
     $request->validate([
         'file' => 'required|file|max:204800',
     ]);
@@ -35,9 +39,36 @@ Route::post('/upload', function (Request $request) {
 
 Route::get('/download', function (request $request) {
     $file = $request->query('file');
-    $path = storage_path(("app\\vault\\{$file}"));
+    $path = storage_path("app\\vault\\{$file}");
 
     return response()->download($path);
+});
+
+Route::get('/get_link', function (Request $request) {
+    $folderPath = rtrim($request->query('path'), '/'); // Удаляем слэш в конце
+    $fullPath = storage_path("app\\vault\\{$folderPath}");
+    
+    // Проверяем существование папки
+    if (!is_dir($fullPath)) {
+        return response('Папка не существует', 404);
+    }
+
+    // Получаем список файлов в папке (исключаем подпапки)
+    $files = array_filter(scandir($fullPath), function ($item) use ($fullPath) {
+        return is_file($fullPath . '/' . $item) && !in_array($item, ['.', '..']);
+    });
+
+    // Проверяем количество файлов
+    if (count($files) !== 1) {
+        return response('-1', 400);
+    }
+
+    // Получаем имя единственного файла
+    $fileName = reset($files);
+    $filePath = "{$folderPath}/{$fileName}";
+    
+    // Получаем ссылку на скачивание
+    return response(url("/download?file={$filePath}"), 200);
 });
 
 Route::get('/search', [FileController::class, 'search'])->name('search');

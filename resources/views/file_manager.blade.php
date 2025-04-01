@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Файловый менеджер</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -34,6 +35,7 @@
         @csrf
         <!-- Скрытое поле для передачи текущего пути -->
         <input type="hidden" name="path" value="{{ request('path', '') }}">
+        <input type="hidden" id="csrf-token" value="{{ csrf_token() }}">
     
         <div class="flex items-center space-x-4">
             <!-- Кастомная кнопка выбора файла -->
