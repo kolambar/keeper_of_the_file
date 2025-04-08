@@ -5,7 +5,10 @@ use App\Http\Middleware\VerifyCsrfToken;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\AuthController;
 
 
 VerifyCsrfToken::except(['/upload']);
@@ -69,6 +72,23 @@ Route::get('/get_link', function (Request $request) {
     
     // Получаем ссылку на скачивание
     return response(url("/download?file={$filePath}"), 200);
+});
+
+Route::get('/auth/redirect', function() {
+    return Socialite::driver('keycloak')->redirect();
+});
+
+Route::get('/auth/kc_callback', function() {
+    $user = Socialite::driver('keycloak')->user();
+
+    AuthController::login($user);
+
+    return redirect('/');
+});
+
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/');
 });
 
 Route::get('/search', [FileController::class, 'search'])->name('search');

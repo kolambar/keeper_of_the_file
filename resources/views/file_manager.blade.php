@@ -7,6 +7,17 @@
   <title>Файловый менеджер</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+@auth
+<div class="user-panel">
+    <span>Вы вошли как: {{ Auth::user()->name }}</span>
+    <form action="/logout" method="POST">
+        @csrf
+        <button type="submit">Выйти</button>
+    </form>
+</div>
+@else
+<a href="/auth/redirect">Войти через Keycloak</a>
+@endauth
 <body class="bg-gray-100 min-h-screen p-6">
   <div class="w-full max-w-7xl mx-auto bg-white shadow-lg rounded-lg p-6">
     <h1 class="text-3xl font-bold mb-4 text-center">Keeper of the file</h1>
