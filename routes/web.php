@@ -48,7 +48,7 @@ Route::middleware('auth')->group(function() {
 
     Route::get('/download', function (request $request) {
         $file = $request->query('file');
-        $path = storage_path("app\\vault\\{$file}");
+        $path = storage_path("app/vault/{$file}");
 
         return response()->download($path);
     });
@@ -68,7 +68,7 @@ Route::middleware('auth')->group(function() {
 
 Route::get('/get_link', function (Request $request) {
     $folderPath = rtrim($request->query('path'), '/'); // Удаляем слэш в конце
-    $fullPath = storage_path("app\\vault\\{$folderPath}");
+    $fullPath = storage_path("app/vault/{$folderPath}");
     
     // Проверяем существование папки
     if (!is_dir($fullPath)) {
