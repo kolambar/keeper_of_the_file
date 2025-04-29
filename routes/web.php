@@ -53,33 +53,6 @@ Route::middleware('auth')->group(function() {
         return response()->download($path);
     });
 
-    Route::get('/get_link', function (Request $request) {
-        $folderPath = rtrim($request->query('path'), '/'); // Удаляем слэш в конце
-        $fullPath = storage_path("app\\vault\\{$folderPath}");
-        
-        // Проверяем существование папки
-        if (!is_dir($fullPath)) {
-            return response('Папка не существует', 404);
-        }
-
-        // Получаем список файлов в папке (исключаем подпапки)
-        $files = array_filter(scandir($fullPath), function ($item) use ($fullPath) {
-            return is_file($fullPath . '/' . $item) && !in_array($item, ['.', '..']);
-        });
-
-        // Проверяем количество файлов
-        if (count($files) !== 1) {
-            return response('-1', 400);
-        }
-
-        // Получаем имя единственного файла
-        $fileName = reset($files);
-        $filePath = "{$folderPath}/{$fileName}";
-        
-        // Получаем ссылку на скачивание
-        return response(url("/download?file={$filePath}"), 200);
-    });
-
     Route::post('/logout', function () {
         Auth::logout();
 
@@ -91,6 +64,33 @@ Route::middleware('auth')->group(function() {
 
     Route::get('/search', [FileController::class, 'search'])->name('search');
 
+});
+
+Route::get('/get_link', function (Request $request) {
+    $folderPath = rtrim($request->query('path'), '/'); // Удаляем слэш в конце
+    $fullPath = storage_path("app\\vault\\{$folderPath}");
+    
+    // Проверяем существование папки
+    if (!is_dir($fullPath)) {
+        return response('Папка не существует', 404);
+    }
+
+    // Получаем список файлов в папке (исключаем подпапки)
+    $files = array_filter(scandir($fullPath), function ($item) use ($fullPath) {
+        return is_file($fullPath . '/' . $item) && !in_array($item, ['.', '..']);
+    });
+
+    // Проверяем количество файлов
+    if (count($files) !== 1) {
+        return response('-1', 400);
+    }
+
+    // Получаем имя единственного файла
+    $fileName = reset($files);
+    $filePath = "{$folderPath}/{$fileName}";
+    
+    // Получаем ссылку на скачивание
+    return response(url("/download?file={$filePath}"), 200);
 });
 
 Route::get('/auth/redirect', function() {
