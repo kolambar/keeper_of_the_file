@@ -13,5 +13,6 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         '/upload', // Отключаем CSRF-защиту для этого маршрута
+        'upload/*',
     ];
 }

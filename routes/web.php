@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UploadController;
 
 
 //VerifyCsrfToken::except(['/upload']);
@@ -104,3 +105,7 @@ Route::get('/auth/kc_callback', function() {
 
     return redirect('/');
 });
+
+
+Route::post('/upload', [UploadController::class, 'upload']);
+
